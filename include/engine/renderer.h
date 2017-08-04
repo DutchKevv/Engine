@@ -9,19 +9,12 @@
 #include "baseRenderObj.h"
 #include "spriteRenderer.h"
 #include "camera.h"
+#include "world.h"
 
 class Renderer {
-
-private:
-    int counter = 0;
-    bool dirty = true;
+    vector<World*> worlds;
 public:
     SpriteRenderer *sprite;
-    BaseRenderObj *player;
-    BaseRenderObj *skybox;
-    BaseRenderObj *hud;
-
-    vector<BaseRenderObj *> renderObjects;
 
     Renderer();
 
@@ -35,33 +28,19 @@ public:
 
     void appLoop();
 
-    int renderSingleObj(int id, int width, int height);
-
-    BaseRenderObj *getRenderObjectById(int id);
-
     int initWindow();
 
     int setWindowSize(int width, int height);
 
     int initSpriteHandler();
 
-    int attachCamera(Camera *camera);
-
-    int attachSkybox(BaseRenderObj *instance);
-
-    int attachHud(BaseRenderObj *instance);
-
-    int attachPlayer(BaseRenderObj *instance);
-
-    int attachRenderObj(BaseRenderObj *instance);
+    int attachWorld(World *world);
 
     void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 
     void scrollCallback(double xoffset, double yoffset);
 
     void windowSizeCallback(int width, int height);
-
-    int initShadowMap();
 
     void destroy();
 };

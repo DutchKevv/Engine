@@ -23,8 +23,6 @@ public:
     glm::vec3 position;
     glm::vec3 rotation;
 
-    std::vector<Shader> shaders;
-
     BaseRenderObj();
 
     virtual int init();
@@ -38,7 +36,4 @@ public:
     virtual int destroy();
 
     virtual int renderScene(Shader &shader, bool isShadowRender);
-private:
-
-
 };

@@ -76,7 +76,8 @@ set(SOURCE_FILES
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/model.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/mesh.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/mesh.cpp
-        )
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/world.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/world.h)
 
 
 include_directories(
