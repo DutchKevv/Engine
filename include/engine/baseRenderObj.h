@@ -5,7 +5,6 @@
 #pragma once
 
 #include <vector>
-#include "context.h"
 #include "shader.h"
 #include "resourceManager.h"
 
@@ -13,26 +12,32 @@ class BaseRenderObj {
 public:
 
     int id;
+    int width;
+    int height;
 
-    vector<Shader> shaders;
+    float speed;
+    float xRadius = 0.0f;
+    float yRadius = 0.0f;
+    bool isFocused = true;
 
-    Context context;
+    glm::vec3 position;
+    glm::vec3 rotation;
+
+    std::vector<Shader> shaders;
 
     BaseRenderObj();
 
-    virtual int init(Context &context);
+    virtual int init();
 
     virtual int update();
 
     virtual int draw();
 
+    virtual int checkKeys();
+
     virtual int destroy();
 
-    virtual Shader addShader(const char *vertex, const char *fragment) {
-        Shader shader = ResourceManager::LoadShader(vertex, fragment, NULL, "");
-        return shader;
-    }
-
+    virtual int renderScene(Shader &shader, bool isShadowRender);
 private:
 
 

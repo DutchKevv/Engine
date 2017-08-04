@@ -9,8 +9,7 @@ BaseRenderObj::BaseRenderObj()  {
 
 }
 
-int BaseRenderObj::init(Context &context) {
-    this->context = context;
+int BaseRenderObj::init() {
     return 0;
 }
 //
@@ -20,6 +19,14 @@ int BaseRenderObj::update() {
 
 int BaseRenderObj::draw() {
 
+    return 0;
+}
+
+int BaseRenderObj::renderScene(Shader &shader, bool isShadowRender) {
+    return 0;
+}
+
+int BaseRenderObj::checkKeys() {
     return 0;
 }
 

@@ -1,16 +1,10 @@
 #pragma once
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#include <emscripten/html5.h>
-#endif
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
 #include "renderer.h"
-#include "context.h"
 #include "constants.h"
 #include "baseDataObj.h"
 
@@ -22,61 +16,19 @@ class Engine {
 private:
     int counter = 0;
 public:
-    Context *context;
     Renderer *renderer;
 
     vector<BaseDataObj *> dataObjects;
 
-    Engine(int type = 0) {
-        consoleLog("Engine init");
+    Engine(int type = 0);
 
-        this->init(type);
-    };
+    int init(int &type);
 
-    int init(int &type) {
-        this->context = new Context();
-        this->context->type = type;
+    int addDataObj(BaseDataObj *dataObj, int id = -1);
 
-        this->renderer = new Renderer(*this->context);
+    int updateDataObj(int id, json data);
 
-        this->renderer->initWindow();
-
-        return 0;
-    }
-
-    int addDataObj(BaseDataObj *dataObj, int id = -1) {
-        if (id == -1)
-            id = counter++;
-
-        dataObj->id = id;
-        dataObjects.push_back(dataObj);
-        return dataObj->id;
-    }
-
-    int
-    updateDataObj(int id, json data) {
-        BaseDataObj* dataObject = getDataObjById(id);
-
-        if (!dataObject) {
-            consoleLog("Error - DataObject not found");
-            return -1;
-        }
-
-        dataObject->update(data);
-
-        return 0;
-    }
-
-    BaseDataObj* getDataObjById(int id) {
-
-        for (auto &dataObject : dataObjects) {
-            if (dataObject->id == id) {
-                return dataObject;
-            }
-        }
-
-        return NULL;
-    }
+    BaseDataObj *getDataObjById(int id);
 
     int update() {
         return 0;

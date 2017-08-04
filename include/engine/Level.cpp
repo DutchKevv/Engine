@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Model.h"
+#include "model.h"
 
 static GLuint VertexArrayID;
 static GLuint vertexbuffer;

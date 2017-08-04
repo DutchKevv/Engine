@@ -1,6 +1,6 @@
 #include "spriteRenderer.h"
 #include "shader.h"
-
+#include "logger.h"
 
 SpriteRenderer::SpriteRenderer(Shader &shader)
 {
@@ -13,7 +13,7 @@ SpriteRenderer::~SpriteRenderer()
     glDeleteVertexArrays(1, &this->quadVAO);
 }
 
-void SpriteRenderer::DrawSprite(Texture2D &texture, glm::vec2 position, glm::vec2 size, GLfloat rotate, glm::vec3 color)
+void SpriteRenderer::draw(Texture2D &texture, glm::vec2 position, glm::vec2 size, GLfloat rotate, glm::vec3 color)
 {
     // Prepare transformations
     this->shader.Use();

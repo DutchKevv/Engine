@@ -21,12 +21,14 @@ set(SOURCE_FILES
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/baseRenderObj.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/baseRenderObj.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/engine.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/engine.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/renderer.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/renderer.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/constants.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/camera.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/camera.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/context.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/context.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/shader.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/shader.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/logger.cpp
@@ -41,7 +43,14 @@ set(SOURCE_FILES
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/texture.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/texture.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/resourceManager.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/include/engine/resourceManager.h include/engine/spriteRenderer.cpp include/engine/spriteRenderer.h)
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/resourceManager.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/spriteRenderer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/spriteRenderer.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/model.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/model.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/mesh.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/engine/mesh.cpp
+        )
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     find_package(OPENGL REQUIRED)
@@ -53,7 +62,8 @@ if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
 endif ()
 
 include_directories(
-#        /usr/local/include/
+        /usr/local/include/
+        /usr/local/include
         /usr/local/Cellar/freetype/2.8/include/freetype2
 #        ${GLEW_INCLUDE_DIRS}
         ${GLFW_INCLUDE_DIRS}

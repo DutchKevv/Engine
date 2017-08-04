@@ -4,5 +4,5 @@
 
 #pragma once
 
-#define ENGINE_TYPE_GAME 0;
-#define ENGINE_TYPE_APP 1;
+const unsigned int ENGINE_TYPE_GAME = 0;
+const unsigned int ENGINE_TYPE_APP = 1;

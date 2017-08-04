@@ -22,8 +22,8 @@ public:
     Shader &Use();
 
     // Compiles the shader from given source code
-    void Compile(const GLchar *vertexSource, const GLchar *fragmentSource,
-                 const GLchar *geometrySource = nullptr); // Note: geometry source code is optional
+    void Compile(const char *vertexSource, const char *fragmentSource,
+                 const char *geometrySource = nullptr); // Note: geometry source code is optional
     // Utility functions
     void SetFloat(const GLchar *name, GLfloat value, GLboolean useShader = false);
 
@@ -49,5 +49,5 @@ public:
 
 private:
     // Checks if compilation or linking failed and if so, print the error logs
-    void checkCompileErrors(GLuint object, std::string type);
+    void checkCompileErrors(GLuint object, std::string type, const GLchar* name);
 };

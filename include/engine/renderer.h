@@ -6,9 +6,9 @@
 
 #include "logger.h"
 #include "../../extern/stb_image.h"
-#include "context.h"
 #include "baseRenderObj.h"
-
+#include "spriteRenderer.h"
+#include "camera.h"
 
 class Renderer {
 
@@ -16,11 +16,14 @@ private:
     int counter = 0;
     bool dirty = true;
 public:
-    Context &context;
+    SpriteRenderer *sprite;
+    BaseRenderObj *player;
+    BaseRenderObj *skybox;
+    BaseRenderObj *hud;
 
     vector<BaseRenderObj *> renderObjects;
 
-    Renderer(Context &context);
+    Renderer();
 
     void tickLoop();
 
@@ -40,7 +43,15 @@ public:
 
     int setWindowSize(int width, int height);
 
+    int initSpriteHandler();
+
     int attachCamera(Camera *camera);
+
+    int attachSkybox(BaseRenderObj *instance);
+
+    int attachHud(BaseRenderObj *instance);
+
+    int attachPlayer(BaseRenderObj *instance);
 
     int attachRenderObj(BaseRenderObj *instance);
 
@@ -49,6 +60,8 @@ public:
     void scrollCallback(double xoffset, double yoffset);
 
     void windowSizeCallback(int width, int height);
+
+    int initShadowMap();
 
     void destroy();
 };

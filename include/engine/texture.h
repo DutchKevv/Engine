@@ -8,7 +8,7 @@ class Texture2D
 {
 public:
     // Holds the ID of the texture object, used for all texture operations to reference to this particlar texture
-    unsigned int ID;
+    GLuint ID;
     // Texture image dimensions
     GLuint Width, Height; // Width and height of loaded image in pixels
     // Texture Format
