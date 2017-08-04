@@ -51,22 +51,19 @@ void Shader::SetFloat(const GLchar *name, GLfloat value, GLboolean useShader)
     if (useShader)
         this->Use();
 
-    int loc = glGetUniformLocation(this->ID, name);
-    if (loc == -1)
-        consoleLog("")
-    glUniform1f(loc, value);
+    glUniform1f(getUniformPos(name), value);
 }
 void Shader::SetInteger(const GLchar *name, GLint value, GLboolean useShader)
 {
     if (useShader)
         this->Use();
-    glUniform1i(glGetUniformLocation(this->ID, name), value);
+    glUniform1i(getUniformPos(name), value);
 }
 void Shader::SetVector2f(const GLchar *name, GLfloat x, GLfloat y, GLboolean useShader)
 {
     if (useShader)
         this->Use();
-    glUniform2f(glGetUniformLocation(this->ID, name), x, y);
+    glUniform2f(getUniformPos(name), x, y);
 }
 void Shader::SetVector2f(const GLchar *name, const glm::vec2 &value, GLboolean useShader)
 {

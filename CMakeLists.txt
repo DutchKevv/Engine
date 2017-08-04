@@ -13,11 +13,37 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     set(CMAKE_C_COMPILER "emcc")
 endif ()
 
+
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    find_package(OPENGL REQUIRED)
+    find_package(freetype REQUIRED)
+endif ()
+
+set(ALL_LIBS
+        ${OPENGL_LIBRARY}
+        glfw
+        GLEW_1130
+        assimp
+        )
+
+add_definitions(
+        -DTW_STATIC
+        -DTW_NO_LIB_PRAGMA
+        -DTW_NO_DIRECT3D
+        -DGLEW_STATIC
+        -D_CRT_SECURE_NO_WARNINGS
+)
+
+# Compile external dependencies
+add_subdirectory (${CMAKE_CURRENT_LIST_DIR}/extern ${CMAKE_CURRENT_BINARY_DIR}/extern)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+
 set(SOURCE_FILES
 #        ${CMAKE_CURRENT_LIST_DIR}/library.cpp
         ${CMAKE_CURRENT_LIST_DIR}/extern/stb_image.cpp
         ${CMAKE_CURRENT_LIST_DIR}/extern/stb_image.h
+#        ${CMAKE_CURRENT_LIST_DIR}/extern/glew/include/GL/glew.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/baseRenderObj.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/baseRenderObj.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/engine.h
@@ -52,39 +78,27 @@ set(SOURCE_FILES
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/mesh.cpp
         )
 
-if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    find_package(OPENGL REQUIRED)
-    find_package(GLEW REQUIRED)
-    find_package(GLFW3 REQUIRED)
-    find_package(assimp REQUIRED)
-    find_package(freetype REQUIRED)
-    find_package(glm REQUIRED)
-endif ()
 
 include_directories(
-        /usr/local/include/
-        /usr/local/include
-        /usr/local/Cellar/freetype/2.8/include/freetype2
-#        ${GLEW_INCLUDE_DIRS}
-        ${GLFW_INCLUDE_DIRS}
-
-        ${GLM_INCLUDE_DIRS}
-        ${FREETYPE_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_LIST_DIR}/extern/glfw-3.1.2/include/
+        ${CMAKE_CURRENT_LIST_DIR}/extern/glm-0.9.7.1/
+        ${CMAKE_CURRENT_LIST_DIR}/extern/glew-1.13.0/include/
+        ${CMAKE_CURRENT_LIST_DIR}/extern/assimp-3.0.1270/include/
+        ${CMAKE_CURRENT_LIST_DIR}/extern/bullet-2.81-rev2613/src/
+        .
 )
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     include_directories(/emscripten/ /emscripten/emscripten/incoming/system/include)
 else()
-    include_directories()
+    include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 endif ()
 
-add_library(Engine ${SOURCE_FILES})
+add_library(Engine STATIC ${SOURCE_FILES})
 set_target_properties(Engine PROPERTIES LINKER_LANGUAGE CXX)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-o dist/engine.js -s USE_GLFW=3 -s TOTAL_MEMORY=167772160 -s USE_FREETYPE=1 -s OUTLINING_LIMIT=2000 -s DISABLE_EXCEPTION_CATCHING=0 -s NO_EXIT_RUNTIME=1 -s DEMANGLE_SUPPORT=1 -s SAFE_HEAP=1 --bind -s WASM=1 -O2 -s LEGACY_GL_EMULATION=0  -s GL_UNSAFE_OPTS=0 --pre-js pre-module.js --post-js post-module.js -s ASSERTIONS=1 -s GL_ASSERTIONS=1 -s INVOKE_RUN=0  -std=c++11 -s USE_WEBGL2=1 -s FULL_ES3=1 -s GL_DEBUG=1 -s OFFSCREENCANVAS_SUPPORT=0 --use-preload-plugins --preload-file assets --preload-file assets")
 else ()
-    target_link_libraries(${PROJECT_NAME} assimp ${OPENGL_gl_LIBRARY} ${GLEW_LIBRARY} glfw freetype ${GLM_LIBRARY})
+    target_link_libraries(Engine ${ALL_LIBS})
 endif ()
-
-#file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
