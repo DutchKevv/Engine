@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "texture.h"
 #include "logger.h"
 
