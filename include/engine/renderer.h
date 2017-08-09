@@ -12,8 +12,9 @@
 #include "world.h"
 
 class Renderer {
-    vector<World*> worlds;
+
 public:
+    vector<World*> worlds;
     SpriteRenderer *sprite;
 
     Renderer();

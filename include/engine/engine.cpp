@@ -9,12 +9,11 @@
 Engine::Engine(int type) {
     consoleLog("Engine init");
 
-    this->init(type);
+    context->type = type;
+    this->init();
 }
 
-int Engine::init(int &type) {
-    context->type = type;
-
+int Engine::init() {
     this->renderer = new Renderer();
     context->renderer = this->renderer;
 

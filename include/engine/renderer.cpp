@@ -92,7 +92,7 @@ void Renderer::gameLoop() {
 void Renderer::appLoop() {
     World *world = worlds[0];
     for (auto &renderObject : world->renderObjects) {
-        if (renderObject->isFocused == true) {
+        if (renderObject->focused == true) {
             if (renderObject->checkKeys() == 1) {
                 world->renderSingleObj(renderObject->id, renderObject->width, renderObject->height);
             }
@@ -158,8 +158,8 @@ int Renderer::initWindow() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Open a window and create its OpenGL context
-    // glfwGetPrimaryMonitor()
     context->window = glfwCreateWindow(width, height, "Engine", NULL, NULL);
+//    context->window = glfwCreateWindow(width, height, "Engine", glfwGetPrimaryMonitor(), NULL);
 
     if (context->window == NULL) {
         fprintf(stderr, "Failed to open GLFW window. \n");
@@ -167,12 +167,16 @@ int Renderer::initWindow() {
         glfwTerminate();
         return -1;
     }
+
     glfwMakeContextCurrent(context->window);
 
-    glfwSetInputMode(context->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(context->window, _mouseCallback);
-    glfwSetKeyCallback(context->window, _keyCallback);
-    glfwSetScrollCallback(context->window, _scroll_callback);
+    if (context->type == ENGINE_TYPE_GAME) {
+        glfwSetInputMode(context->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPosCallback(context->window, _mouseCallback);
+        glfwSetKeyCallback(context->window, _keyCallback);
+        glfwSetScrollCallback(context->window, _scroll_callback);
+    }
+
     glfwSetWindowSizeCallback(context->window, _windowSizeCallback);
     glfwSetWindowCloseCallback(context->window, _windowCloseCallback);
     glfwSetFramebufferSizeCallback(context->window, _framebuffer_size_callback);

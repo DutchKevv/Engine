@@ -85,8 +85,9 @@ else()
 endif()
 
 if (_GLFW_USE_OPENGL)
-    find_package(OpenGL REQUIRED)
-elseif (_GLFW_USE_GLESV1)
+#    find_package(OpenGL REQUIRED)
+elseif (_GLFW_USE_GLES
+        V1)
     find_package(GLESv1 REQUIRED)
 elseif (_GLFW_USE_GLESV2)
     find_package(GLESv2 REQUIRED)

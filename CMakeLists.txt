@@ -1,31 +1,25 @@
 cmake_minimum_required(VERSION 3.8)
 project(Engine)
 
+message(${CMAKE_SYSTEM_NAME})
 
 set(CMAKE_CXX_STANDARD 11)
 
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dist)
-#set(CMAKE_BUILD_TYPE_INIT "Release")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dist/native)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-message(${CMAKE_SYSTEM_NAME})
 if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    set(CMAKE_C_COMPILER "emcc")
+    set(CMAKE_C_COMPILER "/emscripten/emscripten/incoming/emcc")
 endif ()
 
+# LIBS
+set(ALL_LIBS assimp ${OPENGL_LIBRARY})
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    find_package(OPENGL REQUIRED)
-    find_package(freetype REQUIRED)
-endif ()
+    set(ALL_LIBS ${OPENGL_LIBRARY} glfw GLEW_1130)
+endif()
 
-set(ALL_LIBS
-        ${OPENGL_LIBRARY}
-        glfw
-        GLEW_1130
-        assimp
-        )
-
+# DEFENITIONS
 add_definitions(
         -DTW_STATIC
         -DTW_NO_LIB_PRAGMA
@@ -34,16 +28,18 @@ add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
 )
 
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    add_definitions(-DGLEW_STATIC)
+endif()
+
 # Compile external dependencies
 add_subdirectory (${CMAKE_CURRENT_LIST_DIR}/extern ${CMAKE_CURRENT_BINARY_DIR}/extern)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 set(SOURCE_FILES
-#        ${CMAKE_CURRENT_LIST_DIR}/library.cpp
         ${CMAKE_CURRENT_LIST_DIR}/extern/stb_image.cpp
         ${CMAKE_CURRENT_LIST_DIR}/extern/stb_image.h
-#        ${CMAKE_CURRENT_LIST_DIR}/extern/glew/include/GL/glew.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/baseRenderObj.h
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/baseRenderObj.cpp
         ${CMAKE_CURRENT_LIST_DIR}/include/engine/engine.h
@@ -81,25 +77,29 @@ set(SOURCE_FILES
 
 
 include_directories(
-        ${CMAKE_CURRENT_LIST_DIR}/extern/glfw-3.1.2/include/
         ${CMAKE_CURRENT_LIST_DIR}/extern/glm-0.9.7.1/
-        ${CMAKE_CURRENT_LIST_DIR}/extern/glew-1.13.0/include/
         ${CMAKE_CURRENT_LIST_DIR}/extern/assimp-3.0.1270/include/
-        ${CMAKE_CURRENT_LIST_DIR}/extern/bullet-2.81-rev2613/src/
-        .
+        ${CMAKE_CURRENT_LIST_DIR}/include
 )
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    include_directories(/emscripten/ /emscripten/emscripten/incoming/system/include)
+    include_directories(
+            /emscripten/
+            /emscripten/emscripten/incoming/system/include
+    )
 else()
-    include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
+    include_directories(
+            ${CMAKE_CURRENT_LIST_DIR}/extern/glew-1.13.0/include/
+            ${CMAKE_CURRENT_LIST_DIR}/extern/glfw-3.1.2/include/
+            ${CMAKE_CURRENT_LIST_DIR}/extern/bullet-2.81-rev2613/src/
+    )
 endif ()
 
 add_library(Engine STATIC ${SOURCE_FILES})
 set_target_properties(Engine PROPERTIES LINKER_LANGUAGE CXX)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-o dist/engine.js -s USE_GLFW=3 -s TOTAL_MEMORY=167772160 -s USE_FREETYPE=1 -s OUTLINING_LIMIT=2000 -s DISABLE_EXCEPTION_CATCHING=0 -s NO_EXIT_RUNTIME=1 -s DEMANGLE_SUPPORT=1 -s SAFE_HEAP=1 --bind -s WASM=1 -O2 -s LEGACY_GL_EMULATION=0  -s GL_UNSAFE_OPTS=0 --pre-js pre-module.js --post-js post-module.js -s ASSERTIONS=1 -s GL_ASSERTIONS=1 -s INVOKE_RUN=0  -std=c++11 -s USE_WEBGL2=1 -s FULL_ES3=1 -s GL_DEBUG=1 -s OFFSCREENCANVAS_SUPPORT=0 --use-preload-plugins --preload-file assets --preload-file assets")
+    set_target_properties(Engine PROPERTIES LINK_FLAGS "-o dist/engine.js -s USE_GLFW=3 -s TOTAL_MEMORY=167772160 -s USE_FREETYPE=1 -s OUTLINING_LIMIT=2000 -s DISABLE_EXCEPTION_CATCHING=0 -s NO_EXIT_RUNTIME=1 -s DEMANGLE_SUPPORT=1 -s SAFE_HEAP=1 --bind -s WASM=1 -O2 -s LEGACY_GL_EMULATION=0  -s GL_UNSAFE_OPTS=0 --pre-js pre-module.js --post-js post-module.js -s ASSERTIONS=1 -s GL_ASSERTIONS=1 -s INVOKE_RUN=0  -std=c++11 -s USE_WEBGL2=1 -s FULL_ES3=1 -s GL_DEBUG=1 -s OFFSCREENCANVAS_SUPPORT=0 --use-preload-plugins --preload-file assets --preload-file assets")
 else ()
     target_link_libraries(Engine ${ALL_LIBS})
 endif ()

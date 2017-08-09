@@ -18,7 +18,7 @@ public:
     float speed;
     float xRadius = 0.0f;
     float yRadius = 0.0f;
-    bool isFocused = true;
+    bool focused = false;
 
     glm::vec3 position;
     glm::vec3 rotation;

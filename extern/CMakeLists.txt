@@ -1,75 +1,73 @@
-if(MSVC AND NOT "${MSVC_VERSION}" LESS 1400)
-	add_definitions( "/MP" )
-endif()
+if (MSVC AND NOT "${MSVC_VERSION}" LESS 1400)
+    add_definitions("/MP")
+endif ()
 
 
 add_definitions(
-	-DTW_STATIC
-	-DTW_NO_LIB_PRAGMA
-	-DTW_NO_DIRECT3D
-	-DGLEW_STATIC
-	-D_CRT_SECURE_NO_WARNINGS
+        -DTW_STATIC
+        -DTW_NO_LIB_PRAGMA
+        -DTW_NO_DIRECT3D
+        -DGLEW_STATIC
+        -D_CRT_SECURE_NO_WARNINGS
 )
 
 ### GLFW ###
 
-add_subdirectory (glfw-3.1.2)
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    add_subdirectory(glfw-3.1.2)
 
-include_directories(
-	glfw-3.1.2/include/GLFW/
-	glew-1.13.0/include/
-)
+    include_directories(
+            glfw-3.1.2/include/GLFW/
+            glew-1.13.0/include/
+    )
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-set(OPENGL_LIBRARY
-	${OPENGL_LIBRARY}
-	-lGL -lGLU -lXrandr -lXext -lX11 -lrt
-	${CMAKE_DL_LIBS}
-	${GLFW_LIBRARIES}
-)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-set(OPENGL_LIBRARY
-	${OPENGL_LIBRARY}
-	${CMAKE_DL_LIBS}
-	${GLFW_LIBRARIES}
-)
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+        set(OPENGL_LIBRARY
+                ${OPENGL_LIBRARY}
+                -lGL -lGLU -lXrandr -lXext -lX11 -lrt
+                ${CMAKE_DL_LIBS}
+                ${GLFW_LIBRARIES}
+                )
+    elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        set(OPENGL_LIBRARY
+                ${OPENGL_LIBRARY}
+                ${CMAKE_DL_LIBS}
+                ${GLFW_LIBRARIES}
+                )
+    endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-### GLEW ###
+    ### GLEW ###
 
-set(GLEW_SOURCE
-	glew-1.13.0/src/glew.c
-)
+    set(GLEW_SOURCE glew-1.13.0/src/glew.c)
 
-set(GLEW_HEADERS
-)
+    set(GLEW_HEADERS)
 
+    add_library(GLEW_1130 STATIC
+            ${GLEW_SOURCE}
+            ${GLEW_INCLUDE}
+            )
 
-add_library( GLEW_1130 STATIC
-	${GLEW_SOURCE}
-	${GLEW_INCLUDE}
-)
-
-target_link_libraries(GLEW_1130
-	${OPENGL_LIBRARY}
-	${EXTRA_LIBS}
-)
+    target_link_libraries(GLEW_1130
+            ${OPENGL_LIBRARY}
+            ${EXTRA_LIBS}
+            )
+endif ()
 
 
 ### ANTTWEAKBAR ###
 
-set(ANTTWEAKBAR_SOURCE
-	AntTweakBar-1.16/src/LoadOGL.cpp
-	AntTweakBar-1.16/src/LoadOGLCore.cpp
-	AntTweakBar-1.16/src/TwColors.cpp
-	AntTweakBar-1.16/src/TwBar.cpp
-	AntTweakBar-1.16/src/TwEventGLFW.c
-	AntTweakBar-1.16/src/TwFonts.cpp
-	AntTweakBar-1.16/src/TwMgr.cpp
-	AntTweakBar-1.16/src/TwOpenGL.cpp
-	AntTweakBar-1.16/src/TwOpenGLCore.cpp
-	AntTweakBar-1.16/src/TwPrecomp.cpp
-)
+#set(ANTTWEAKBAR_SOURCE
+#	AntTweakBar-1.16/src/LoadOGL.cpp
+#	AntTweakBar-1.16/src/LoadOGLCore.cpp
+#	AntTweakBar-1.16/src/TwColors.cpp
+#	AntTweakBar-1.16/src/TwBar.cpp
+#	AntTweakBar-1.16/src/TwEventGLFW.c
+#	AntTweakBar-1.16/src/TwFonts.cpp
+#	AntTweakBar-1.16/src/TwMgr.cpp
+#	AntTweakBar-1.16/src/TwOpenGL.cpp
+#	AntTweakBar-1.16/src/TwOpenGLCore.cpp
+#	AntTweakBar-1.16/src/TwPrecomp.cpp
+#)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") # If on Xcode, rename files to .mm
 #file(COPY ${ANTTWEAKBAR_SOURCE} DESTINATION AntTweakBar-ObjectiveC/)
@@ -96,19 +94,19 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") # If on Xcode, rename files to .mm
 #	${CMAKE_BINARY_DIR}/external/AntTweakBar-ObjectiveC/TwOpenGLCore.mm
 #	${CMAKE_BINARY_DIR}/external/AntTweakBar-ObjectiveC/TwPrecomp.mm
 #)
-include_directories(
-	${CMAKE_SOURCE_DIR}/external/AntTweakBar-1.16/src/
-)
+#include_directories(
+#${CMAKE_SOURCE_DIR}/external/AntTweakBar-1.16/src/
+#)
 add_definitions(
-	-D_MACOSX
+-D_MACOSX
 )
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 add_definitions(
-	-D_UNIX
+-D_UNIX
 )
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 add_definitions(
-	-D_WINDOWS
+-D_WINDOWS
 )
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -140,7 +138,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 #)
 
 #target_link_libraries(
-##	ANTTWEAKBAR_116_OGLCORE_GLFW
+#	ANTTWEAKBAR_116_OGLCORE_GLFW
 #	${OPENGL_LIBRARY}
 #	${EXTRA_LIBS}
 #)

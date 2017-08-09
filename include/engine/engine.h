@@ -22,7 +22,7 @@ public:
 
     Engine(int type = 0);
 
-    int init(int &type);
+    int init();
 
     int addDataObj(BaseDataObj *dataObj, int id = -1);
 
