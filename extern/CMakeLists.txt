@@ -38,14 +38,29 @@ if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
 
     ### GLEW ###
 
+<<<<<<< Updated upstream
     set(GLEW_SOURCE glew-1.13.0/src/glew.c)
+=======
+set(GLEW_SOURCE
+	glew-1.13.0/src/glew.c
+)
+
+set(GLEW_HEADERS)
+>>>>>>> Stashed changes
 
     set(GLEW_HEADERS)
 
+<<<<<<< Updated upstream
     add_library(GLEW_1130 STATIC
             ${GLEW_SOURCE}
             ${GLEW_INCLUDE}
             )
+=======
+add_library(GLEW_1130 STATIC
+	${GLEW_SOURCE}
+	${GLEW_INCLUDE}
+)
+>>>>>>> Stashed changes
 
     target_link_libraries(GLEW_1130
             ${OPENGL_LIBRARY}
