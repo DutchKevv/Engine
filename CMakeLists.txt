@@ -5,19 +5,21 @@ message(${CMAKE_SYSTEM_NAME})
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dist/native)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dist/linux)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dist/windows)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dist/mac)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dist/web)
     set(CMAKE_C_COMPILER "/emscripten/emscripten/incoming/emcc")
 endif ()
 
 # LIBS
-set(ALL_LIBS assimp ${OPENGL_LIBRARY})
-
-if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    set(ALL_LIBS ${OPENGL_LIBRARY} glfw GLEW_1130)
-endif()
+set(ALL_LIBS assimp)
 
 # DEFENITIONS
 add_definitions(
@@ -29,13 +31,12 @@ add_definitions(
 )
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    set(ALL_LIBS ${OPENGL_LIBRARY} glfw GLEW_1130)
     add_definitions(-DGLEW_STATIC)
-endif()
+endif ()
 
 # Compile external dependencies
-add_subdirectory (${CMAKE_CURRENT_LIST_DIR}/extern ${CMAKE_CURRENT_BINARY_DIR}/extern)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/extern ${CMAKE_CURRENT_BINARY_DIR}/extern)
 
 set(SOURCE_FILES
         ${CMAKE_CURRENT_LIST_DIR}/extern/stb_image.cpp
@@ -87,7 +88,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
             /emscripten/
             /emscripten/emscripten/incoming/system/include
     )
-else()
+else ()
     include_directories(
             ${CMAKE_CURRENT_LIST_DIR}/extern/glew-1.13.0/include/
             ${CMAKE_CURRENT_LIST_DIR}/extern/glfw-3.1.2/include/
